@@ -1,41 +1,75 @@
-#include <stdio.h>  
-int compareTwoString(char[],char[]);  
-int main()  
-{  
-   char str1[50]; // declaration of char array  
-   char str2[50]; // declaration of char array
-   
-   printf("Enter the first string : ");  
-   scanf("%s",str1);  
-   
-   printf("Enter the second string : ");  
-   scanf("%s",str2);  
-   
-   int c= compareTwoString(str1,str2); // calling compareTwoString() function  
-   if(c==0)  
-   printf("strings are same");  
-   else  
-   printf("strings are not same");  
-  
-   return 0;  
-}  
-  
-// Comparing both the strings.  
-int compareTwoString(char a[],char b[])  
-{  
-    int flag=0,i=0;  // integer variables declaration  
-    while(a[i]!='\0' &&b[i]!='\0')  // while loop  
-    {  
-       if(a[i]!=b[i])  
-       {  
-           flag=1;  
-           break;  
-       }  
-       i++;  
-    } 
-    if(a[i]!='\0'||b[i]!='\0')
-       return 1;
-    if(flag==0)  
-    return 0;  
-    else  
-    return 1; 
+#include "stdio.h"
+void findWord();
+void UserInput();
+char word[100] ;
+int IntegerWord[100];
+int CheckWord[100];
+int main(){
+    UserInput();
+    findWord();
+    return 0;
+}
+void UserInput(){
+    int index = 0;
+    printf("Enter Word to find :");
+    scanf("%s", word);
+    while(word[index] != '\0'){
+        IntegerWord[index] = word[index];
+        index ++;
+    }
+}
+
+void findWord(){
+    int line = 1;
+    int index = 0;
+    int flag = 0;
+    int wordcount=0;
+    FILE *fptr;
+    fptr = fopen("data.txt","r");
+    int c = (fgetc(fptr));
+    while(c != EOF){
+        if(c == 10){
+            line++;
+        }
+        CheckWord[index] = c;
+        if (!(CheckWord[index] >= 65 && CheckWord[index] <= 90 || CheckWord[index] >= 97 && CheckWord[index] <= 122) ){
+
+            CheckWord[index] = '\0';
+            index = 0;
+
+            while (CheckWord[index] != '\0' && IntegerWord[index] != '\0') {
+
+                flag = 0;
+                if (CheckWord[index] != IntegerWord[index] ){
+                    flag++;
+
+
+                    break;
+                }else{
+                    index ++;
+                }
+            }
+            if(CheckWord[index] != '\0' || IntegerWord[index] != '\0'){
+                flag = 1;
+            }
+            index = -1;
+            if(flag == 0){
+                wordcount++;
+                printf("%d time found  \nat line : %d\n",wordcount,line);
+                printf("\n");
+            }
+
+        }
+
+        index ++;
+        c = (fgetc(fptr));
+    }
+    if (flag >= 1 && wordcount == 0){
+        printf("%s does not exit in this file.",word);
+    }else{
+        printf("I found %d word in this file",wordcount);
+    }
+
+    fclose(fptr);
+}
+
